@@ -49,10 +49,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
   location: location
   zones: empty(availabilityZone) ? null : [availabilityZone]
   identity: {
-    type: 'SystemAssigned, UserAssigned'
-    userAssignedIdentities: {
-      '/subscriptions/7e116fd0-ac3c-4bbd-81d4-78ff2da2fbe3/resourceGroups/amba-monitoring-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id-amba-prod-001': {}
-    }
+    type: 'SystemAssigned'
   }
   properties: {
     hardwareProfile: {
@@ -70,6 +67,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         secureBootEnabled: true
         vTpmEnabled: true
       }
+      encryptionAtHost: true
     }
     storageProfile: {
       imageReference: {
@@ -89,9 +87,6 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         }
         deleteOption: 'Detach'
         diskSizeGB: osDiskSizeGB
-        securityProfile: {
-          encryptionAtHost: true
-        }
       }
       dataDisks: [for (disk, i) in dataDisks: {
         lun: i
