@@ -38,10 +38,10 @@ jobs:
           az bicep install
           az bicep version
 
-      - name: 🧪 Build .bicepparam file to JSON
+      - name: 🧪 Build .bicepparam to JSON
         run: |
           ENV="${{ github.event.inputs.environment }}"
-          bicep build "${ENV}.bicepparam" --outfile "${ENV}.parameters.json"
+          bicep build-params "${ENV}.bicepparam" --outfile "${ENV}.parameters.json"
 
       - name: 🚀 Deploy VM from Bicep
         run: |
