@@ -1,20 +1,9 @@
 using './main.bicep'
 
 param vmName = 'aw-dev-0001'
-param osDiskId = '/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/dev-rg/providers/Microsoft.Compute/disks/aw-dev-0001-osdisk'
-param nicId = '/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/dev-rg/providers/Microsoft.Network/networkInterfaces/aw-dev-0001-nic'
-param location = 'westeurope'
+param osDiskId = '/subscriptions/fb4e727e-f4b0-42b0-8950-8a4961a2bce9/resourcegroups/prod-rg/providers/Microsoft.Compute/disks/aw-prod-test-osdisk'
+param nicId = '/subscriptions/fb4e727e-f4b0-42b0-8950-8a4961a2bce9/resourceGroups/prod-rg/providers/Microsoft.Network/networkInterfaces/aw-prod-test-nic'
+param location = 'germanywestcentral'
 param vmSize = 'Standard_B1ls'
-param adminUsername = 'devadmin'
-param osDiskSizeGB = 128
-param availabilityZone = '1'
-param useSpot = true
-param evictionPolicy = 'Deallocate'
-param useHybridBenefit = true
-param dataDisks = [
-  {
-    sizeGB: 64
-    caching: 'ReadOnly'
-    type: 'StandardSSD_LRS'
-  }
-]
+param adminUsername = 'skfadmin'
+param osDiskSizeGB = 64
