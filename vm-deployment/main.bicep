@@ -42,14 +42,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         diskSizeGB: osDiskSizeGB
       }
     }
-    osProfile: {
-      computerName: vmName
-      adminUsername: adminUsername
-      windowsConfiguration: {
-        provisionVMAgent: true
-        enableAutomaticUpdates: true
-      }
-    }
+    
     networkProfile: {
       networkInterfaces: [
         {
