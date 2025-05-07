@@ -11,7 +11,7 @@ param vmSize string = 'Standard_D4lds_v5'
 param adminUsername string = 'skfadmin'
 
 @description('OS Disk size in GB')
-param osDiskSizeGB int = 127
+param osDiskSizeGB int = 64
 
 @description('NIC resource ID to attach')
 param nicId string
