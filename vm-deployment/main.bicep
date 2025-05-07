@@ -16,6 +16,8 @@ param osDiskSizeGB int = 127
 @description('NIC resource ID to attach')
 param nicId string
 
+param osDiskId string
+
 resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
   name: vmName
   location: location
