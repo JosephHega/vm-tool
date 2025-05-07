@@ -1,3 +1,5 @@
+// main.bicep
+
 @description('The Azure region to deploy the VM')
 param location string
 
@@ -15,9 +17,9 @@ param osDiskType string = 'Standard_LRS'
 
 @description('Image reference for the VM OS')
 param imageReference object = {
-  publisher: 'Canonical'
-  offer: '0001-com-ubuntu-server-focal'
-  sku: '20_04-lts'
+  publisher: 'MicrosoftWindowsServer'
+  offer: 'WindowsServer'
+  sku: '2022-Datacenter'
   version: 'latest'
 }
 
@@ -58,6 +60,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
         vTpmEnabled: true
       }
     } : null
+    
     storageProfile: {
       osDisk: {
         createOption: 'FromImage'
@@ -68,19 +71,22 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
       }
       imageReference: imageReference
     }
+    
     osProfile: {
       computerName: vmName
       adminUsername: adminUsername
       adminPassword: adminPassword
-      linuxConfiguration: {
-        disablePasswordAuthentication: false
+      windowsConfiguration: {
+        enableAutomaticUpdates: true
       }
     }
+    
     networkProfile: {
       networkInterfaces: [{
         id: nicId
       }]
     }
+    
     licenseType: useHybridBenefit ? 'Windows_Server' : null
   }
 }

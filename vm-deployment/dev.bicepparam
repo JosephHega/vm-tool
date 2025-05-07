@@ -13,9 +13,9 @@ param nicId = '/subscriptions/fb4e727e-f4b0-42b0-8950-8a4961a2bce9/resourceGroup
 param osDiskSizeGB = 30
 param osDiskType = 'Standard_LRS'
 param imageReference = {
-  publisher: 'Canonical'
-  offer: '0001-com-ubuntu-server-focal'
-  sku: '20_04-lts'
+  publisher: 'MicrosoftWindowsServer'
+  offer: 'WindowsServer'
+  sku: '2022-Datacenter'
   version: 'latest'
 }
 
