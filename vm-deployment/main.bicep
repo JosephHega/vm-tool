@@ -32,7 +32,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
     storageProfile: {
       osDisk: { 
         osType: 'Windows'
-        name: '${vmName}_osdisk'
+        name: 'aw-prod-test-osdisk'
         createOption: 'Attach' 
         caching: 'ReadWrite'
         managedDisk: {
