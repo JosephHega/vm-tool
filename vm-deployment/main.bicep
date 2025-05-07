@@ -33,20 +33,13 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       hibernationEnabled: false
     }
     storageProfile: {
-      imageReference: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2022-datacenter'
-        version: 'latest'
-      }
-      osDisk: {
+      osDisk: { 
         osType: 'Windows'
         name: '${vmName}_osdisk'
-        createOption: 'Attach' // ✅ Corrected to attach the existing disk
+        createOption: 'Attach' 
         caching: 'ReadWrite'
         managedDisk: {
-          id: osDiskId // ✅ Added reference to `osDiskId`
-          storageAccountType: 'Premium_LRS'
+          id: osDiskId 
         }
         deleteOption: 'Detach'
         diskSizeGB: osDiskSizeGB
@@ -65,9 +58,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
           enableHotpatching: false
         }
       }
-      secrets: []
       allowExtensionOperations: true
-      requireGuestProvisionSignal: true
     }
     networkProfile: {
       networkInterfaces: [
