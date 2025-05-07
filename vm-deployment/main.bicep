@@ -1,5 +1,5 @@
 @description('Name of the Virtual Machine')
-param vmName string = 'aw0008'
+param vmName string = 'aw0009'
 
 @description('Location of the VM')
 param location string = 'germanywestcentral'
