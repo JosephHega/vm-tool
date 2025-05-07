@@ -7,9 +7,6 @@ param location string = 'germanywestcentral'
 @description('Size of the VM')
 param vmSize string = 'Standard_B1ls'
 
-@description('Admin username')
-param adminUsername string = 'skfadmin'
-
 @description('OS Disk size in GB')
 param osDiskSizeGB int = 64
 
@@ -46,20 +43,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       }
       dataDisks: []
     }
-    osProfile: {
-      computerName: vmName
-      adminUsername: adminUsername
-      windowsConfiguration: {
-        provisionVMAgent: true
-        enableAutomaticUpdates: true
-        patchSettings: {
-          patchMode: 'AutomaticByOS'
-          assessmentMode: 'ImageDefault'
-          enableHotpatching: false
-        }
-      }
-      allowExtensionOperations: true
-    }
+  
     networkProfile: {
       networkInterfaces: [
         {
