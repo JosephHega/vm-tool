@@ -16,19 +16,14 @@ param osDiskSizeGB int = 127
 @description('NIC resource ID to attach')
 param nicId string
 
-param osDiskId string
+@description('OS Disk resource ID to attach')
+param osDiskId string 
 
 resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
   name: vmName
   location: location
   identity: {
     type: 'SystemAssigned'
-
-    // Uncomment below if you want to use a User Assigned Managed Identity (UAMI) later
-    // type: 'SystemAssigned, UserAssigned'
-    // userAssignedIdentities: {
-    //   '/subscriptions/7e116fd0-ac3c-4bbd-81d4-78ff2da2fbe3/resourceGroups/amba-monitoring-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id-amba-prod-001': {}
-    // }
   }
   properties: {
     hardwareProfile: {
@@ -47,9 +42,10 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       osDisk: {
         osType: 'Windows'
         name: '${vmName}_osdisk'
-        createOption: 'FromImage'
+        createOption: 'Attach' // ✅ Corrected to attach the existing disk
         caching: 'ReadWrite'
         managedDisk: {
+          id: osDiskId // ✅ Added reference to `osDiskId`
           storageAccountType: 'Premium_LRS'
         }
         deleteOption: 'Detach'
@@ -57,9 +53,6 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       }
       dataDisks: []
     }
-    // Uncomment licenseType if you want to use Azure Hybrid Benefit
-    // licenseType: 'Windows_Server'
-
     osProfile: {
       computerName: vmName
       adminUsername: adminUsername
