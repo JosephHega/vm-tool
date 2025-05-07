@@ -5,7 +5,7 @@ param vmName string = 'aw0008'
 param location string = 'germanywestcentral'
 
 @description('Size of the VM')
-param vmSize string = 'Standard_D4lds_v5'
+param vmSize string = 'Standard_B1ls'
 
 @description('Admin username')
 param adminUsername string = 'skfadmin'
