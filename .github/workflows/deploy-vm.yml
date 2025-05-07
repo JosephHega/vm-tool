@@ -19,13 +19,12 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment }}
 
     steps:
-      - name: 📥 Checkout repo
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: 🔐 Azure Login (OIDC)
+      - name: Azure Login (OIDC)
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -33,24 +32,12 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           enable-AzPSSession: false
 
-      - name: 🛠️ Install Bicep CLI
-        run: |
-          az bicep install
-          az bicep version
-
-      - name: 🧪 Build .bicepparam to JSON
-        working-directory: ./vm-deployment
+      - name: Deploy VM from Bicep
         run: |
           ENV="${{ github.event.inputs.environment }}"
-          bicep build-params "${ENV}.bicepparam" --outfile "${ENV}.parameters.json"
-
-      - name: 🚀 Deploy VM from Bicep
-        working-directory: ./vm-deployment
-        run: |
-          ENV="${{ github.event.inputs.environment }}"
-          RESOURCE_GROUP="${ENV}-rg"
+          RESOURCE_GROUP="${{ ENV }}-rg"
 
           az deployment group create \
             --resource-group "$RESOURCE_GROUP" \
             --template-file main.bicep \
-            --parameters @"${ENV}.parameters.json"
+            --parameters @"${ENV}.bicepparam"

@@ -1,63 +1,64 @@
-@description('Name of the Virtual Machine')
-param vmName string = 'aw0009'
+// main.bicep
 
-@description('Location of the VM')
-param location string = 'germanywestcentral'
+@description('The Azure region to deploy the VM')
+param location string
 
-@description('Size of the VM')
-param vmSize string = 'Standard_B1ls'
+@description('The name of the virtual machine')
+param vmName string
 
-@description('OS Disk size in GB')
-param osDiskSizeGB int = 64
-
-@description('NIC resource ID to attach')
+@description('The existing NIC ID to attach to the VM')
 param nicId string
 
-@description('OS Disk resource ID to attach')
-param osDiskId string 
+@description('The OS disk size in GB')
+param osDiskSizeGB int = 30
 
-resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
+@description('The OS disk type')
+param osDiskType string = 'Standard_LRS'
+
+@description('Enable Trusted Launch (Secure Boot, vTPM, Integrity Monitoring)')
+param enableTrustedLaunch bool = false
+
+@description('Specify the availability zone (optional)')
+param availabilityZone string = ''
+
+@description('Use Azure Hybrid Benefit (default true)')
+param useHybridBenefit bool = true
+
+@description('Enable Host-based encryption')
+param enableHostEncryption bool = false
+
+@description('Enable Azure Spot Instances (for Dev only)')
+param useSpotInstances bool = true
+
+@description('Image reference for the VM OS')
+param imageReference object = {
+  publisher: 'Canonical'
+  offer: 'UbuntuServer'
+  sku: '20_04-lts-gen2'
+  version: 'latest'
+}
+
+resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
   name: vmName
   location: location
-  identity: {
-    type: 'SystemAssigned'
-  }
   properties: {
     hardwareProfile: {
-      vmSize: vmSize
-    }
-    additionalCapabilities: {
-      hibernationEnabled: false
+      vmSize: 'Standard_B1s' // Cheapest VM size
     }
     storageProfile: {
-      osDisk: { 
-        osType: 'Windows'
-        name: 'aw-prod-test-osdisk'
-        createOption: 'Attach' 
-        caching: 'ReadWrite'
-        managedDisk: {
-          id: osDiskId 
-        }
-        deleteOption: 'Detach'
+      osDisk: {
+        createOption: 'FromImage'
         diskSizeGB: osDiskSizeGB
-      }
-      dataDisks: []
-    }
-  
-    networkProfile: {
-      networkInterfaces: [
-        {
-          id: nicId
-          properties: {
-            deleteOption: 'Detach'
-          }
+        managedDisk: {
+          storageAccountType: osDiskType
         }
-      ]
-    }
-    diagnosticsProfile: {
-      bootDiagnostics: {
-        enabled: true
       }
+      imageReference: imageReference
+    }
+    networkProfile: {
+      networkInterfaces: [{
+        id: nicId
+      }]
     }
   }
 }
