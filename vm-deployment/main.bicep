@@ -1,23 +1,20 @@
 @description('Name of the Virtual Machine')
-param vmName string
+param vmName string = 'aw0009'
 
 @description('Location of the VM')
 param location string = 'germanywestcentral'
 
 @description('Size of the VM')
-param vmSize string = 'Standard_D2s_v5'
-
-@description('Admin username')
-param adminUsername string = 'adminuser'
+param vmSize string = 'Standard_B1ls'
 
 @description('OS Disk size in GB')
-param osDiskSizeGB int = 128
+param osDiskSizeGB int = 64
 
-@description('Resource ID of the NIC to attach')
+@description('NIC resource ID to attach')
 param nicId string
 
-@description('Resource ID of the existing OS disk to attach')
-param osDiskId string
+@description('OS Disk resource ID to attach')
+param osDiskId string 
 
 resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
   name: vmName
@@ -29,20 +26,24 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
     hardwareProfile: {
       vmSize: vmSize
     }
+    additionalCapabilities: {
+      hibernationEnabled: false
+    }
     storageProfile: {
-      osDisk: {
+      osDisk: { 
         osType: 'Windows'
-        name: '${vmName}_OsDisk'
-        createOption: 'Attach'
+        name: 'aw-prod-test-osdisk'
+        createOption: 'Attach' 
         caching: 'ReadWrite'
         managedDisk: {
-          id: osDiskId
+          id: osDiskId 
         }
         deleteOption: 'Detach'
         diskSizeGB: osDiskSizeGB
       }
+      dataDisks: []
     }
-    
+  
     networkProfile: {
       networkInterfaces: [
         {
