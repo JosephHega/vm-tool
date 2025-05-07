@@ -39,16 +39,25 @@ param useSpotInstances bool = true
 @description('The admin username for the VM')
 param adminUsername string
 
+@secure()
 @description('The admin password for the VM')
 param adminPassword string
 
 resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
   name: vmName
   location: location
+  zones: availabilityZone != '' ? [availabilityZone] : null
   properties: {
     hardwareProfile: {
-      vmSize: 'Standard_B1s' // Cheapest VM size
+      vmSize: useSpotInstances ? 'Standard_B1s' : 'Standard_D2s_v3'
     }
+    securityProfile: enableTrustedLaunch ? {
+      securityType: 'TrustedLaunch'
+      uefiSettings: {
+        secureBootEnabled: true
+        vTpmEnabled: true
+      }
+    } : null
     storageProfile: {
       osDisk: {
         createOption: 'FromImage'
@@ -72,5 +81,6 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
         id: nicId
       }]
     }
+    licenseType: useHybridBenefit ? 'Windows_Server' : null
   }
 }
