@@ -21,10 +21,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: 📥 Checkout repo
         uses: actions/checkout@v4
 
-      - name: Azure Login (OIDC)
+      - name: 🔐 Azure Login (OIDC)
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -32,7 +32,13 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           enable-AzPSSession: false
 
-      - name: Deploy VM from Bicep
+      - name: 🛠️ Install Bicep CLI
+        run: |
+          az bicep install
+          az bicep version
+
+      - name: 🚀 Deploy VM from Bicep
+        working-directory: ./vm-deployment
         run: |
           ENV="${{ github.event.inputs.environment }}"
           RESOURCE_GROUP="${{ ENV }}-rg"
