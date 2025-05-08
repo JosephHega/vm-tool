@@ -1,16 +1,10 @@
-// dev.bicepparam
 using 'main.bicep'
-param enableTrustedLaunch = false
-param availabilityZone = ''
-param useHybridBenefit = true
-param enableHostEncryption = false
-param useSpotInstances = true
-param adminUsername = 'devuser'
-param adminPassword = 'DevStrongPassword123!'
-param location = 'germanywestcentral'
-param vmName = 'dev-vm'
+
 param resourceGroupName = 'dev-rg'
-param nicId = '/subscriptions/fb4e727e-f4b0-42b0-8950-8a4961a2bce9/resourceGroups/prod-rg/providers/Microsoft.Network/networkInterfaces/aw-prod-test-nic'
+param location = 'westeurope'
+param vmName = 'dev-vm'
+param nicId = '/subscriptions/fb4e727e-f4b0-42b0-8950-8a4961a2bce9/resourceGroups/dev-rg/providers/Microsoft.Network/networkInterfaces/dev-nic'
+
 param osDiskSizeGB = 30
 param osDiskType = 'Standard_LRS'
 param imageReference = {
@@ -20,3 +14,15 @@ param imageReference = {
   version: 'latest'
 }
 
+param enableTrustedLaunch = true
+param enableSecureBoot = true
+param enableVTPM = true
+param enableHostEncryption = false
+param availabilityZoneMode = 'none'
+param availabilityZones = []
+param useHybridBenefit = true
+param useSpotInstances = true
+param vmSize = 'Standard_B2s'
+
+param adminUsername = 'devuser'
+param adminPassword = 'DevStrongPassword123!'

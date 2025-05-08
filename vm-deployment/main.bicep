@@ -11,33 +11,37 @@ param vmName string
 param nicId string
 
 @description('The OS disk size in GB')
-param osDiskSizeGB int = 30
+param osDiskSizeGB int
 
 @description('The OS disk type')
-param osDiskType string = 'Standard_LRS'
+param osDiskType string
 
 @description('Image reference for the VM OS')
-param imageReference object = {
-  publisher: 'MicrosoftWindowsServer'
-  offer: 'WindowsServer'
-  sku: '2022-Datacenter-smalldisk-g2'
-  version: 'latest'
-}
+param imageReference object
 
-@description('Enable Trusted Launch (Secure Boot, vTPM, Integrity Monitoring)')
-param enableTrustedLaunch bool = true
+@description('Enable Trusted Launch (Secure Boot, vTPM)')
+param enableTrustedLaunch bool
 
-@description('Specify the availability zone (optional)')
-param availabilityZone string = '1'
+@description('Enable Secure Boot (only if Trusted Launch is enabled)')
+param enableSecureBoot bool
 
-@description('Use Azure Hybrid Benefit (default true)')
-param useHybridBenefit bool = true
+@description('Enable vTPM (only if Trusted Launch is enabled)')
+param enableVTPM bool
 
 @description('Enable Host-based encryption')
-param enableHostEncryption bool = false
+param enableHostEncryption bool
+
+@description('Specify the availability zone mode (manual, auto, or none)')
+param availabilityZoneMode string
+
+@description('Specify the availability zones (if manual)')
+param availabilityZones array
+
+@description('Use Azure Hybrid Benefit')
+param useHybridBenefit bool
 
 @description('Enable Azure Spot Instances (for Dev only)')
-param useSpotInstances bool = true
+param useSpotInstances bool
 
 @description('The admin username for the VM')
 param adminUsername string
@@ -46,20 +50,25 @@ param adminUsername string
 @description('The admin password for the VM')
 param adminPassword string
 
+@description('The VM size (Standard_DS1_v2, Standard_B2s, etc.)')
+param vmSize string
+
 resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
   name: vmName
   location: location
-  zones: availabilityZone != '' ? [availabilityZone] : null
+  zones: availabilityZoneMode == 'manual' ? availabilityZones : (availabilityZoneMode == 'auto' ? null : [])
+
   properties: {
     hardwareProfile: {
-      vmSize: useSpotInstances ? 'Standard_B1s' : 'Standard_D2s_v3'
+      vmSize: vmSize
     }
     securityProfile: enableTrustedLaunch ? {
       securityType: 'TrustedLaunch'
       uefiSettings: {
-        secureBootEnabled: true
-        vTpmEnabled: true
+        secureBootEnabled: enableSecureBoot
+        vTpmEnabled: enableVTPM
       }
+      encryptionAtHost: enableHostEncryption
     } : null
     
     storageProfile: {
