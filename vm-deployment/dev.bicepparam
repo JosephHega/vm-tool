@@ -17,7 +17,6 @@ param imageReference = {
 param enableTrustedLaunch = true
 param enableSecureBoot = true
 param enableVTPM = true
-param enableHostEncryption = false
 param availabilityZoneMode = 'none'
 param availabilityZones = []
 param useHybridBenefit = true

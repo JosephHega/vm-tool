@@ -28,9 +28,6 @@ param enableSecureBoot bool
 @description('Enable vTPM (only if Trusted Launch is enabled)')
 param enableVTPM bool
 
-@description('Enable Host-based encryption')
-param enableHostEncryption bool
-
 @description('Specify the availability zone mode (manual, auto, or none)')
 param availabilityZoneMode string
 
@@ -68,7 +65,6 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
         secureBootEnabled: enableSecureBoot
         vTpmEnabled: enableVTPM
       }
-      encryptionAtHost: enableHostEncryption
     } : null
     
     storageProfile: {
