@@ -39,11 +39,11 @@ jobs:
           az bicep version
 
       - name: 🚀 Deploy VM from Bicep
-
+        working-directory: ./vm-deployment
         run: |
           ENV="${{ github.event.inputs.environment }}"
           RESOURCE_GROUP="${ENV}-rg"
           az deployment group create \
             --resource-group "$RESOURCE_GROUP" \
             --template-file main.bicep \
-            --parameters "${ENV}.bicepparam"
+            --parameters ${ENV}.bicepparam
