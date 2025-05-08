@@ -44,6 +44,22 @@ jobs:
           ENV="${{ github.event.inputs.environment }}"
           bicep build-params "${ENV}.bicepparam" --outfile "${ENV}.parameters.json"
 
+      - name: 🌐 Check and Create Resource Group if Missing
+        working-directory: ./vm-deployment
+        run: |
+          ENV="${{ github.event.inputs.environment }}"
+          RESOURCE_GROUP="$(jq -r '.parameters.resourceGroupName.value' ${ENV}.parameters.json)"
+          LOCATION="$(jq -r '.parameters.location.value' ${ENV}.parameters.json)"
+          echo "Checking if Resource Group $RESOURCE_GROUP exists in $LOCATION..."
+
+          # Check if the resource group exists
+          if ! az group show --name "$RESOURCE_GROUP" &>/dev/null; then
+            echo "Resource Group $RESOURCE_GROUP does not exist. Creating in $LOCATION..."
+            az group create --name "$RESOURCE_GROUP" --location "$LOCATION"
+          else
+            echo "Resource Group $RESOURCE_GROUP already exists."
+          fi
+
       - name: 🚀 Deploy VM from Bicep
         working-directory: ./vm-deployment
         run: |
