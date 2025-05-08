@@ -22,10 +22,10 @@ jobs:
     environment: ${{ github.event.inputs.environment }}
 
     steps:
-      - name: 📥 Checkout repo
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: 🔐 Azure Login (OIDC)
+      - name: Azure Login (OIDC)
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -38,13 +38,13 @@ jobs:
           az bicep install
           az bicep version
 
-      - name: 🧪 Build .bicepparam to JSON
+      - name: Build .bicepparam to JSON
         working-directory: ./vm-deployment
         run: |
           ENV="${{ github.event.inputs.environment }}"
           bicep build-params "${ENV}.bicepparam" --outfile "${ENV}.parameters.json"
 
-      - name: 🌐 Check and Create Resource Group if Missing
+      - name: Check and Create Resource Group if Missing
         working-directory: ./vm-deployment
         run: |
           ENV="${{ github.event.inputs.environment }}"
@@ -60,7 +60,7 @@ jobs:
             echo "Resource Group $RESOURCE_GROUP already exists."
           fi
 
-      - name: 🚀 Deploy VM from Bicep
+      - name: Deploy VM from Bicep
         working-directory: ./vm-deployment
         run: |
           ENV="${{ github.event.inputs.environment }}"
