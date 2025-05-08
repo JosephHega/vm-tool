@@ -37,16 +37,19 @@ jobs:
         run: |
           az bicep install
           az bicep version
+
       - name: 🧪 Build .bicepparam to JSON
         working-directory: ./vm-deployment
         run: |
           ENV="${{ github.event.inputs.environment }}"
           bicep build-params "${ENV}.bicepparam" --outfile "${ENV}.parameters.json"
+
       - name: 🚀 Deploy VM from Bicep
         working-directory: ./vm-deployment
         run: |
           ENV="${{ github.event.inputs.environment }}"
-          RESOURCE_GROUP="${ENV}-rg"
+          RESOURCE_GROUP="$(jq -r '.parameters.resourceGroupName.value' ${ENV}.parameters.json)"
+          echo "Using Resource Group: $RESOURCE_GROUP"
           az deployment group create \
             --resource-group "$RESOURCE_GROUP" \
             --template-file main.bicep \

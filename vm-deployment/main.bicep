@@ -6,6 +6,11 @@ param location string
 @description('The name of the virtual machine')
 param vmName string
 
+@description('The name of the resource group to use')
+param resourceGroupName string
+
+
+
 @description('The existing NIC ID to attach to the VM')
 param nicId string
 
