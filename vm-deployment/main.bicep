@@ -24,7 +24,7 @@ param imageReference object = {
 }
 
 @description('Enable Trusted Launch (Secure Boot, vTPM, Integrity Monitoring)')
-param enableTrustedLaunch bool = false
+param enableTrustedLaunch bool = true
 
 @description('Specify the availability zone (optional)')
 param availabilityZone string = ''

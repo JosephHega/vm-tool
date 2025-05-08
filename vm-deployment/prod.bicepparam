@@ -1,9 +1,9 @@
 // prod.bicepparam
 using 'main.bicep'
-param enableTrustedLaunch = false
+param enableTrustedLaunch = true
 param availabilityZone = ''
 param useHybridBenefit = true
-param enableHostEncryption = false
+param enableHostEncryption = true
 param useSpotInstances = false
 param adminUsername = 'produser'
 param adminPassword = 'ProdSecurePassword456!'
