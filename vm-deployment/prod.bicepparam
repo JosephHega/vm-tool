@@ -1,7 +1,7 @@
 // prod.bicepparam
 using 'main.bicep'
 param enableTrustedLaunch = true
-param availabilityZone = ''
+param availabilityZone = '1'
 param useHybridBenefit = true
 param enableHostEncryption = true
 param useSpotInstances = false
@@ -15,6 +15,6 @@ param osDiskType = 'Premium_LRS'
 param imageReference = {
   publisher: 'MicrosoftWindowsServer'
   offer: 'WindowsServer'
-  sku: '2022-Datacenter'
+  sku: '2022-Datacenter-smalldisk-g2'
   version: 'latest'
 }

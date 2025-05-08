@@ -15,7 +15,7 @@ param osDiskType = 'Standard_LRS'
 param imageReference = {
   publisher: 'MicrosoftWindowsServer'
   offer: 'WindowsServer'
-  sku: '2022-Datacenter'
+  sku: '2022-Datacenter-smalldisk-g2'
   version: 'latest'
 }
 

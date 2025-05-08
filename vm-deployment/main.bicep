@@ -19,7 +19,7 @@ param osDiskType string = 'Standard_LRS'
 param imageReference object = {
   publisher: 'MicrosoftWindowsServer'
   offer: 'WindowsServer'
-  sku: '2022-Datacenter'
+  sku: '2022-Datacenter-smalldisk-g2'
   version: 'latest'
 }
 
@@ -27,7 +27,7 @@ param imageReference object = {
 param enableTrustedLaunch bool = true
 
 @description('Specify the availability zone (optional)')
-param availabilityZone string = ''
+param availabilityZone string = '1'
 
 @description('Use Azure Hybrid Benefit (default true)')
 param useHybridBenefit bool = true
