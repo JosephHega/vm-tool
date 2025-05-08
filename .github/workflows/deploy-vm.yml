@@ -43,6 +43,7 @@ jobs:
           ENV="${{ github.event.inputs.environment }}"
           bicep build-params "${ENV}.bicepparam" --outfile "${ENV}.parameters.json"
       - name: 🚀 Deploy VM from Bicep
+        working-directory: ./vm-deployment
         run: |
           ENV="${{ github.event.inputs.environment }}"
           RESOURCE_GROUP="${ENV}-rg"
