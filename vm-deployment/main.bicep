@@ -22,11 +22,11 @@ param createPublicIP bool = false
 @description('The OS disk size in GB')
 param osDiskSizeGB int
 
-param dataDisks array = [256, 256]// Three managed data disks of specified sizes
+@description('Array of managed data disk sizes (GB)')
+param dataDisks array = []
 
-
-@description('The OS disk type (Standard_LRS, Premium_LRS, StandardSSD_LRS, Premium_ZRS)')
-param osDiskType string
+@description('The OS disk type (StandardSSD_LRS, Premium_LRS, Premium_ZRS)')
+param osDiskType string = 'StandardSSD_LRS'
 
 @description('Image reference for the VM OS')
 param imageReference object
@@ -78,13 +78,10 @@ resource nic 'Microsoft.Network/networkInterfaces@2022-09-01' = {
   }
 }
 
-
-
 // VM Resource Definition
 resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
   name: vmName
   location: location
-  zones: availabilityZoneMode == 'manual' ? availabilityZones : (availabilityZoneMode == 'auto' ? null : [])
 
   properties: {
     hardwareProfile: {
@@ -101,10 +98,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
           storageAccountType: osDiskType
         }
       }
+
       dataDisks: [
         for (i, size) in dataDisks: {
           lun: i
-          name: '${vmName}-datadisk-${i}'
+          name: '${vmName}-datadisk-${i + 1}'
           createOption: 'Empty'
           diskSizeGB: size
           managedDisk: {
@@ -133,7 +131,5 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
         }
       ]
     }
-
-    //licenseType: useHybridBenefit ? (osType == 'Windows' ? 'Windows_Server' : 'RHEL_BYOS') : null
   }
 }
