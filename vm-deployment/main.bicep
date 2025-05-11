@@ -7,53 +7,49 @@ param resourceGroupName string
 @description('The name of the virtual machine')
 param vmName string
 
-@description('The VNet ID to attach the NIC to')
-param vnetId string
+@description('Whether to attach the NIC to an existing network (true/false)')
+param addToExistingNetwork bool
 
-@description('The Subnet ID within the VNet to attach the NIC to')
+@description('The Subnet ID to attach the NIC to (Existing Subnet, required if addToExistingNetwork is true)')
 param subnetId string
 
 @description('The OS disk size in GB')
-param osDiskSizeGB int
+param osDiskSizeGB int = 128
 
 @description('The OS disk type')
-param osDiskType string
+param osDiskType string = 'Premium_LRS'
 
 @description('Image reference for the VM OS')
-param imageReference object
-
-@description('Enable Trusted Launch (Secure Boot, vTPM)')
-param enableTrustedLaunch bool
-
-@description('Enable Secure Boot (only if Trusted Launch is enabled)')
-param enableSecureBoot bool
-
-@description('Enable vTPM (only if Trusted Launch is enabled)')
-param enableVTPM bool
+param imageReference object = {
+  publisher: 'Canonical'
+  offer: 'UbuntuServer'
+  sku: '20_04-lts-gen2'
+  version: 'latest'
+}
 
 @description('Specify the availability zone mode (manual, auto, or none)')
-param availabilityZoneMode string
+param availabilityZoneMode string = 'none'
 
 @description('Specify the availability zones (if manual)')
-param availabilityZones array
+param availabilityZones array = []
 
 @description('Use Azure Hybrid Benefit')
-param useHybridBenefit bool
+param useHybridBenefit bool = false
 
 @description('Enable Azure Spot Instances (for Dev only)')
-param useSpotInstances bool
+param useSpotInstances bool = false
 
 @description('The admin username for the VM')
-param adminUsername string
+param adminUsername string = 'defaultuser'
 
 @secure()
 @description('The admin password for the VM')
-param adminPassword string
+param adminPassword string = 'SecurePassword123!'
 
 @description('The VM size (Standard_DS1_v2, Standard_B2s, etc.)')
-param vmSize string
+param vmSize string = 'Standard_DS1_v2'
 
-// Automatically create a NIC and attach it to the specified VNet and Subnet
+// Automatically create a NIC and attach it to the specified Subnet (if addToExistingNetwork is true)
 resource nic 'Microsoft.Network/networkInterfaces@2022-05-01' = {
   name: '${vmName}-nic'
   location: location
@@ -61,14 +57,29 @@ resource nic 'Microsoft.Network/networkInterfaces@2022-05-01' = {
     ipConfigurations: [{
       name: 'ipconfig1'
       properties: {
-        subnet: { id: subnetId }
+        subnet: addToExistingNetwork ? { id: subnetId } : null
         privateIPAllocationMethod: 'Dynamic'
       }
     }]
   }
 }
 
-// VM Resource Definition with Dynamic Configuration
+// OS Disk Configuration
+resource osDisk 'Microsoft.Compute/disks@2022-05-01' = {
+  name: '${vmName}-osdisk'
+  location: location
+  properties: {
+    creationData: {
+      createOption: 'FromImage'
+    }
+    diskSizeGB: osDiskSizeGB
+    sku: {
+      name: osDiskType
+    }
+  }
+}
+
+// VM Resource Definition
 resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
   name: vmName
   location: location
@@ -78,22 +89,13 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
     hardwareProfile: {
       vmSize: vmSize
     }
-    priority: useSpotInstances ? 'Spot' : 'Regular'
-
-    securityProfile: enableTrustedLaunch ? {
-      securityType: 'TrustedLaunch'
-      uefiSettings: {
-        secureBootEnabled: enableSecureBoot
-        vTpmEnabled: enableVTPM
-      }
-    } : null
 
     storageProfile: {
       osDisk: {
-        createOption: 'FromImage'
-        diskSizeGB: osDiskSizeGB
+        name: osDisk.name
+        createOption: 'Attach'
         managedDisk: {
-          storageAccountType: osDiskType
+          id: osDisk.id
         }
       }
       imageReference: imageReference
@@ -113,7 +115,5 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
         id: nic.id
       }]
     }
-
-    licenseType: useHybridBenefit ? 'RHEL_BYOS' : null
   }
 }
