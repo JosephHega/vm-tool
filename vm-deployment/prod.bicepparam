@@ -20,8 +20,8 @@ param imageReference = {
   version: 'latest'
 }
 
-param availabilityZoneMode = 'Manual'
-param availabilityZones = ['1']
+param availabilityZoneMode = 'auto' // Set to 'none' for no availability zones
+param availabilityZones = []
 param useHybridBenefit = false
 param useSpotInstances = false
 
