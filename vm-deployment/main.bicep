@@ -29,16 +29,16 @@ param osDiskType string = 'StandardSSD_LRS'
 param imageReference object
 
 @description('Specify the availability zone mode (manual, auto, or none)')
-param availabilityZoneMode string
+param availabilityZoneMode string = 'none'
 
 @description('Specify the availability zones (if manual)')
-param availabilityZones array
+param availabilityZones array = []
 
 @description('Use Azure Hybrid Benefit')
-param useHybridBenefit bool
+param useHybridBenefit bool = false
 
 @description('Enable Azure Spot Instances (for Dev only)')
-param useSpotInstances bool
+param useSpotInstances bool = false
 
 @description('The admin username for the VM')
 param adminUsername string
@@ -79,6 +79,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2022-09-01' = {
 resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
   name: vmName
   location: location
+  zones: availabilityZoneMode == 'manual' ? availabilityZones : null
 
   properties: {
     hardwareProfile: {
@@ -100,31 +101,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
           lun: 0
           name: '${vmName}-datadisk-1'
           createOption: 'Empty'
-          diskSizeGB: 256  // 
+          diskSizeGB: 256  // Set your value directly here
           managedDisk: {
             storageAccountType: osDiskType
           }
         }
-        /*
-        {
-          lun: 1
-          name: '${vmName}-datadisk-2'
-          createOption: 'Empty'
-          diskSizeGB: 512  
-          managedDisk: {
-            storageAccountType: osDiskType
-          }
-        },
-        {
-          lun: 2
-          name: '${vmName}-datadisk-3'
-          createOption: 'Empty'
-          diskSizeGB: 1024  
-          managedDisk: {
-            storageAccountType: osDiskType
-          }
-        }
-        */
       ]
     }
 
@@ -147,5 +128,10 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
         }
       ]
     }
+
+    licenseType: useHybridBenefit ? (osType == 'Windows' ? 'Windows_Server' : (osType == 'Linux' ? 'RHEL_BYOS' : null)) : null
+
+
+    
   }
 }

@@ -2,7 +2,7 @@ using 'main.bicep'
 
 param resourceGroupName = 'linuxVM-rg'
 param location = 'germanywestcentral'
-param vmName = 'linux-vm-prod'
+param vmName = 'linux-vm-new-test'
 param osType = 'Linux'
 param vmSize = 'Standard_DS4_v2'
 param addToExistingNetwork = true
@@ -20,8 +20,8 @@ param imageReference = {
   version: 'latest'
 }
 
-param availabilityZoneMode = 'none'
-param availabilityZones = []
+param availabilityZoneMode = 'Manual'
+param availabilityZones = ['1', '2']
 param useHybridBenefit = false
 param useSpotInstances = false
 
