@@ -7,8 +7,11 @@ param resourceGroupName string
 @description('The name of the virtual machine')
 param vmName string
 
-@description('The existing NIC ID to attach to the VM')
-param nicId string
+@description('The VNet ID to attach the NIC to')
+param vnetId string
+
+@description('The Subnet ID within the VNet to attach the NIC to')
+param subnetId string
 
 @description('The OS disk size in GB')
 param osDiskSizeGB int
@@ -50,6 +53,22 @@ param adminPassword string
 @description('The VM size (Standard_DS1_v2, Standard_B2s, etc.)')
 param vmSize string
 
+// Automatically create a NIC and attach it to the specified VNet and Subnet
+resource nic 'Microsoft.Network/networkInterfaces@2022-05-01' = {
+  name: '${vmName}-nic'
+  location: location
+  properties: {
+    ipConfigurations: [{
+      name: 'ipconfig1'
+      properties: {
+        subnet: { id: subnetId }
+        privateIPAllocationMethod: 'Dynamic'
+      }
+    }]
+  }
+}
+
+// VM Resource Definition with Dynamic Configuration
 resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
   name: vmName
   location: location
@@ -59,6 +78,8 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
     hardwareProfile: {
       vmSize: vmSize
     }
+    priority: useSpotInstances ? 'Spot' : 'Regular'
+
     securityProfile: enableTrustedLaunch ? {
       securityType: 'TrustedLaunch'
       uefiSettings: {
@@ -66,7 +87,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
         vTpmEnabled: enableVTPM
       }
     } : null
-    
+
     storageProfile: {
       osDisk: {
         createOption: 'FromImage'
@@ -77,22 +98,22 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
       }
       imageReference: imageReference
     }
-    
+
     osProfile: {
       computerName: vmName
       adminUsername: adminUsername
       adminPassword: adminPassword
-      windowsConfiguration: {
-        enableAutomaticUpdates: true
+      linuxConfiguration: {
+        disablePasswordAuthentication: false
       }
     }
-    
+
     networkProfile: {
       networkInterfaces: [{
-        id: nicId
+        id: nic.id
       }]
     }
-    
-    licenseType: useHybridBenefit ? 'Windows_Server' : null
+
+    licenseType: useHybridBenefit ? 'RHEL_BYOS' : null
   }
 }
