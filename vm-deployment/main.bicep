@@ -100,16 +100,16 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
       }
       dataDisks: [
         for (i, size) in dataDisks: {
-          // Validate disk size to be between 1 and 32767
           lun: i
           name: '${vmName}-datadisk-${i + 1}'
           createOption: 'Empty'
-          diskSizeGB: size > 0 && size <= 32767 ? size : 1  // Fallback to 1 GB if invalid
+          diskSizeGB: size
           managedDisk: {
             storageAccountType: osDiskType
           }
         }
       ]
+      
       
     }
 
