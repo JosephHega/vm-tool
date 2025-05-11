@@ -22,7 +22,7 @@ param createPublicIP bool = false
 @description('The OS disk size in GB')
 param osDiskSizeGB int
 
-@description('The OS disk type')
+@description('The OS disk type (Standard_LRS, Premium_LRS, StandardSSD_LRS, Premium_ZRS)')
 param osDiskType string
 
 @description('Image reference for the VM OS')
@@ -75,18 +75,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2022-09-01' = {
   }
 }
 
-// OS Disk Configuration
-resource osDisk 'Microsoft.Compute/disks@2024-03-02' = {
-  name: '${vmName}-osdisk'
-  location: location
-  properties: {
-    creationData: {
-      createOption: 'FromImage'
-    }
-    diskSizeGB: osDiskSizeGB
-    tier: osDiskType
-  }
-}
+
 
 // VM Resource Definition
 resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
@@ -100,15 +89,15 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
     }
 
     storageProfile: {
+      imageReference: imageReference
       osDisk: {
-        name: osDisk.name
-        createOption: 'Attach'
+        name: '${vmName}-osdisk'
+        createOption: 'FromImage'
+        diskSizeGB: osDiskSizeGB
         managedDisk: {
-          id: osDisk.id
           storageAccountType: osDiskType
         }
       }
-      imageReference: imageReference
     }
 
     osProfile: {
@@ -118,16 +107,17 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
       linuxConfiguration: osType == 'Linux' ? {
         disablePasswordAuthentication: false
       } : null
-
       windowsConfiguration: osType == 'Windows' ? {
         enableAutomaticUpdates: true
       } : null
     }
 
     networkProfile: {
-      networkInterfaces: [{
-        id: nic.id
-      }]
+      networkInterfaces: [
+        {
+          id: nic.id
+        }
+      ]
     }
 
     licenseType: useHybridBenefit ? (osType == 'Windows' ? 'Windows_Server' : 'RHEL_BYOS') : null
