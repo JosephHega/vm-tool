@@ -23,7 +23,7 @@ param createPublicIP bool = false
 param osDiskSizeGB int
 
 @description('Array of managed data disk sizes (GB)')
-param dataDisks array = []
+param dataDisks array = [256, 512]
 
 @description('The OS disk type (StandardSSD_LRS, Premium_LRS, Premium_ZRS)')
 param osDiskType string = 'StandardSSD_LRS'
