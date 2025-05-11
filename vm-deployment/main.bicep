@@ -100,17 +100,16 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
       }
       dataDisks: [
         for (i, size) in dataDisks: {
+          // Validate disk size during deployment
           lun: i
           name: '${vmName}-datadisk-${i + 1}'
           createOption: 'Empty'
-          diskSizeGB: size
+          diskSizeGB: size > 0 && size <= 32767 ? size : 0 // Set to 0 if invalid for debugging
           managedDisk: {
             storageAccountType: osDiskType
           }
         }
       ]
-      
-      
     }
 
     osProfile: {
@@ -134,3 +133,6 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
     }
   }
 }
+
+// Debug Output
+output debugDataDisks array = dataDisks
