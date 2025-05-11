@@ -23,7 +23,7 @@ param createPublicIP bool = false
 param osDiskSizeGB int
 
 @description('Array of managed data disk sizes (GB)')
-param dataDisks array = [256, 512]
+param dataDisks array = []
 
 @description('The OS disk type (StandardSSD_LRS, Premium_LRS, Premium_ZRS)')
 param osDiskType string = 'StandardSSD_LRS'
@@ -100,15 +100,17 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
       }
       dataDisks: [
         for (i, size) in dataDisks: {
+          // Validate disk size to be between 1 and 32767
           lun: i
           name: '${vmName}-datadisk-${i + 1}'
           createOption: 'Empty'
-          diskSizeGB: size
+          diskSizeGB: size > 0 && size <= 32767 ? size : 1  // Fallback to 1 GB if invalid
           managedDisk: {
             storageAccountType: osDiskType
           }
         }
       ]
+      
     }
 
     osProfile: {
