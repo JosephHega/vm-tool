@@ -3,7 +3,7 @@ using 'main.bicep'
 param resourceGroupName = 'linuxVM-rg'
 param location = 'germanywestcentral'
 param vmName = 'linux-vm-prod'
-param osType = 'Windows'
+param osType = 'linux'
 param addToExistingNetwork = true
 param subnetId = '/subscriptions/fb4e727e-f4b0-42b0-8950-8a4961a2bce9/resourceGroups/prod-rg/providers/Microsoft.Network/virtualNetworks/vnet-germanywestcentral/subnets/snet-germanywestcentral-1'
 param createPublicIP = false
