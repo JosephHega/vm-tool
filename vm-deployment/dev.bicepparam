@@ -40,10 +40,10 @@ param osDiskType = 'StandardSSD_LRS'
 
 
 param imageReference = {
-  publisher: 'RedHat'  // OS Publisher
-  offer: 'RHEL'        // OS Offer (Red Hat Enterprise Linux)
-  sku: '8-lvm-gen2'    // SKU (Version and Type)
-  version: 'latest'    // Always use the latest version
+  publisher: 'RedHat'  
+  offer: 'RHEL'        
+  sku: '8-lvm-gen2'    
+  version: 'latest'    
 }
 
 // Availability Zone Configuration

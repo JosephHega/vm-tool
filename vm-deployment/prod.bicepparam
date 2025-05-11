@@ -40,10 +40,10 @@ param osDiskType = 'StandardSSD_LRS'
 
 
 param imageReference = {
-  publisher: 'RedHat'  // OS Publisher
-  offer: 'RHEL'        // OS Offer (Red Hat Enterprise Linux)
-  sku: '8-lvm-gen2'    // SKU (Version and Type)
-  version: 'latest'    // Always use the latest version
+  publisher: 'RedHat'  
+  offer: 'RHEL'        
+  sku: '8-lvm-gen2'    
+  version: 'latest'    
 }
 
 // Availability Zone Configuration
@@ -55,7 +55,7 @@ param availabilityZoneMode = 'auto'
 
 // Specify Zones if 'manual' is selected for 'availabilityZoneMode'
 // Example: ['1', '2', '3']
-param availabilityZones = []
+param availabilityZones = [1]
 
 // Options: true (enable hybrid benefit), false (disable)
 param useHybridBenefit = false
