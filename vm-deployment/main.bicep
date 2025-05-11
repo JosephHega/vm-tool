@@ -76,7 +76,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2022-09-01' = {
 }
 
 // OS Disk Configuration
-resource osDisk 'Microsoft.Compute/disks@2022-08-01' = {
+resource osDisk 'Microsoft.Compute/disks@2024-03-02' = {
   name: '${vmName}-osdisk'
   location: location
   properties: {
@@ -84,7 +84,7 @@ resource osDisk 'Microsoft.Compute/disks@2022-08-01' = {
       createOption: 'FromImage'
     }
     diskSizeGB: osDiskSizeGB
-    storageAccountType: osDiskType
+    tier: osDiskType
   }
 }
 
