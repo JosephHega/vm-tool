@@ -120,6 +120,6 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
       ]
     }
 
-    licenseType: useHybridBenefit ? (osType == 'Windows' ? 'Windows_Server' : 'RHEL_BYOS') : null
+    //licenseType: useHybridBenefit ? (osType == 'Windows' ? 'Windows_Server' : 'RHEL_BYOS') : null
   }
 }
