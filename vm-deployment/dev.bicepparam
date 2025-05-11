@@ -26,3 +26,4 @@ param vmSize = 'Standard_DS4_v2'
 param adminUsername = 'prodadmin'
 param adminPassword = 'ProdSecurePassword123!'
 
+param dataDisks = [256, 512]  
