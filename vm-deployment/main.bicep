@@ -38,7 +38,7 @@ param availabilityZones array = []
 param useHybridBenefit bool = false
 
 @description('Enable Azure Spot Instances (for Dev only)')
-param useSpotInstances bool = false
+param useSpotInstances bool 
 
 @description('The admin username for the VM')
 param adminUsername string
@@ -82,6 +82,8 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
   zones: availabilityZoneMode == 'manual' ? availabilityZones : null
 
   properties: {
+    priority: useSpotInstances ? 'Spot' : 'Regular'
+
     hardwareProfile: {
       vmSize: vmSize
     }

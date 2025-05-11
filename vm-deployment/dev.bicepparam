@@ -1,8 +1,8 @@
 using 'main.bicep'
 
-// Resource Group for the VM Deployment
+
 param resourceGroupName = 'linuxVM-rg'
-// Deployment Location 
+
 // 'germanywestcentral'
 param location = 'germanywestcentral'
 param vmName = 'linux-vm-new-test'
