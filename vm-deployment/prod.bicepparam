@@ -21,7 +21,7 @@ param imageReference = {
 }
 
 param availabilityZoneMode = 'Manual'
-param availabilityZones = ['1', '2']
+param availabilityZones = ['1']
 param useHybridBenefit = false
 param useSpotInstances = false
 
