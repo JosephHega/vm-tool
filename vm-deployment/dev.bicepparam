@@ -64,6 +64,6 @@ param useHybridBenefit = false
 param useSpotInstances = true
 
 
-param adminUsername = ''
-param adminPassword = ''
+param adminUsername = 'testadmin'
+param adminPassword = 'testpassword123!'
 
