@@ -98,7 +98,6 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
           storageAccountType: osDiskType
         }
       }
-
       dataDisks: [
         for (i, size) in dataDisks: {
           lun: i
