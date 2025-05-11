@@ -9,17 +9,17 @@ param subnetId = '/subscriptions/fb4e727e-f4b0-42b0-8950-8a4961a2bce9/resourceGr
 param createPublicIP = false
 
 param osDiskSizeGB = 127
-param osDiskType = 'Premium_LRS'
+param osDiskType = 'standardSSD_LRS'
 param imageReference = {
   publisher: 'RedHat'
   offer: 'RHEL'
-  sku: '8-gen2'  
+  sku: '8-lvm-gen2'  
   version: 'latest'
 }
 
 param availabilityZoneMode = 'none'
 param availabilityZones = []
-param useHybridBenefit = true
+param useHybridBenefit = false
 param useSpotInstances = false
 param vmSize = 'Standard_DS4_v2'
 
