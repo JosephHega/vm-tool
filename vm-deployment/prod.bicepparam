@@ -11,7 +11,7 @@ param createPublicIP = false
 
 param osDiskSizeGB = 127
 param osDiskType = 'StandardSSD_LRS'  // Set to SSD
-param dataDisks = [256, 512]     // Three SSD data disks of specified sizes
+
 
 param imageReference = {
   publisher: 'RedHat'

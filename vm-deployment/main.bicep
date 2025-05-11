@@ -22,9 +22,6 @@ param createPublicIP bool = false
 @description('The OS disk size in GB')
 param osDiskSizeGB int
 
-@description('Array of managed data disk sizes (GB)')
-param dataDisks array
-
 @description('The OS disk type (StandardSSD_LRS, Premium_LRS, Premium_ZRS)')
 param osDiskType string = 'StandardSSD_LRS'
 
@@ -99,16 +96,35 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
         }
       }
       dataDisks: [
-        for (i, size) in dataDisks: {
-          // Validate disk size during deployment
-          lun: i
-          name: '${vmName}-datadisk-${i + 1}'
+        {
+          lun: 0
+          name: '${vmName}-datadisk-1'
           createOption: 'Empty'
-          diskSizeGB: size > 0 && size <= 32767 ? size : 0 // Set to 0 if invalid for debugging
+          diskSizeGB: 256  // 
           managedDisk: {
             storageAccountType: osDiskType
           }
         }
+        /*
+        {
+          lun: 1
+          name: '${vmName}-datadisk-2'
+          createOption: 'Empty'
+          diskSizeGB: 512  
+          managedDisk: {
+            storageAccountType: osDiskType
+          }
+        },
+        {
+          lun: 2
+          name: '${vmName}-datadisk-3'
+          createOption: 'Empty'
+          diskSizeGB: 1024  
+          managedDisk: {
+            storageAccountType: osDiskType
+          }
+        }
+        */
       ]
     }
 
@@ -133,6 +149,3 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
     }
   }
 }
-
-// Debug Output
-output debugDataDisks array = dataDisks
